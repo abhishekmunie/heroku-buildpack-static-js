@@ -43,7 +43,7 @@ To modify this buildpack, fork it on Github. Push up changes to your fork, then
 create a test app with `--buildpack <your-github-url>` and push to it.
 
 This buildpack uses [Google Closure Compiler](https://developers.google.com/closure/compiler/) to minify `filename.js` and create `filename.min.js`.
-It also creates a copy of `filename.min.js` name with first 8 characters of its sha1 (`filename.<sha1:0:8>.js`).
-It simply runs `java -jar compiler.jar --js_output_file filename.js --js filename.min.js` on all `.js` files except those ending in `.min.js`.
+It also creates a copy of `filename.min.js` file with first 8 characters of its sha1 (`filename.<sha1:0:8>.js`).
+It simply runs `java -jar compiler.jar --js_output_file "filename.js" --js "filename.min.js"` on all `.js` files except those ending in `.min.js`.
 To customize compilation see [Annotating JavaScript for the Closure Compiler](https://developers.google.com/closure/compiler/docs/js-for-compiler) 
 and [Advanced Compilation and Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3).
