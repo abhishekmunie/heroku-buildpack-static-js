@@ -17,7 +17,7 @@ echo "done"
 echo "-----> Compiling JS files..."
 find ${BUILD_DIR} -iregex ".*\.js" \! -iregex ".*\.min\.js" | while read -r jsfile
 do
-  echo -n "       -----> compiling $jsfile..."
+  echo -n "       -----> compiling ${jsfile#*$BUILD_DIR/}..."
   fname=${jsfile%.*}
   java -jar compiler.jar --js_output_file "$fname.min.js" --js "$jsfile"
   jssha1=`openssl sha1 "$jsfile"`
