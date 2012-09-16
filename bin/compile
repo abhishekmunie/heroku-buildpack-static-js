@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+echo -n "-----> Fetching Closure Compiler..."
+curl --silent --location http://closure-compiler.googlecode.com/files/compiler-latest.tar.gz | tar xz
+echo "done"
+
+# js compilation ----------------------------
+
+echo "-----> Compiling JS files..."
+find ${BUILD_DIR} -iregex ".*\.js" \! -iregex ".*\.min\.js" | while read -r jsfile
+do
+  echo -n "       -----> compiling $jsfile..."
+  fname=${jsfile%.*}
+  java -jar compiler.jar --js_output_file "$fname.min.js" --js "$jsfile"
+  jssha1=`openssl sha1 "$jsfile"`
+  jssha1=${jssha1#*= }
+  jssha1=${jssha1:0:8}
+  cp "$fname.min.js" "$fname.$jssha1.js"
+  echo "done"
+done
+echo "       done."
+
+# init default nginx configuration ----------
+
+if [ -f "${BUILD_DIR}/conf" ]; then
+  echo "-----> Using existing nginx configuration."
+else
+  echo -n "-----> Creating default nginx configuration."
+  mkdir ${BUILD_DIR}/conf
+  curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-static-js/master/conf/mime.types > ${BUILD_DIR}/conf/mime.types
+  curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-static-js/master/conf/nginx.conf.erb > ${BUILD_DIR}/conf/nginx.conf.erb
+  echo "done"
+fi
+
+# Nginx -------------------------------------
+
+curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-nginx/master/bin/compile > compile_nginx
+
+chmod +x compile_nginx
+./compile_nginx $BUILD_DIR $CACHE_DIR
