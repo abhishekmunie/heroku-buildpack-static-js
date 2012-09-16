@@ -9,11 +9,8 @@ Usage
 Example usage:
 
     $ ls -R *
-    conf:
-    mime.types     nginx.conf.erb
-
-    html:
-    index.html
+    _staticjs.yml    	        main.js
+    ...
 
     $ heroku create --stack cedar --buildpack https://github.com/abhishekmunie/heroku-buildpack-static-js.git
     ...
@@ -28,7 +25,7 @@ Example usage:
     -----> Installing OpenJDK 1.6...done
     -----> Fetching Closure Compiler...done
     -----> Compiling JS files...
-           -----> compiling /tmp/build_3djm832rw7scg/main.js...done
+           -----> compiling main.js...done
            ...
            done.
     -----> Discovering process types
