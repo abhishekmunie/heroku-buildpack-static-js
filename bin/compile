@@ -8,6 +8,14 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
 echo -n "-----> Fetching Closure Compiler..."
 curl --silent --location http://closure-compiler.googlecode.com/files/compiler-latest.tar.gz | tar xz
 echo "done"
@@ -17,9 +25,9 @@ echo "done"
 echo "-----> Compiling JS files..."
 find ${BUILD_DIR} -iregex ".*\.js" \! -iregex ".*\.min\.js" | while read -r jsfile
 do
-  echo -n "       -----> compiling ${jsfile#*$BUILD_DIR/}..."
+  echo -n "-----> compiling ${jsfile#*$BUILD_DIR/}..." | indent
   fname=${jsfile%.*}
-  java -jar compiler.jar --js_output_file "$fname.min.js" --js "$jsfile"
+  java -jar compiler.jar --js_output_file "$fname.min.js" --js "$jsfile" | indent
   jssha1=`openssl sha1 "$jsfile"`
   jssha1=${jssha1#*= }
   jssha1=${jssha1:0:8}
