@@ -1,7 +1,7 @@
 Heroku buildpack: Static-JS (with Coffee Script and Google Closure Compiler)
 =============================================================================
 
-This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpack) which minifies and serves javascript files using static nginx.
+This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpack) which compiles coffee, then minifies and serves javascript files using static nginx.
 
 Usage
 -----
@@ -9,7 +9,7 @@ Usage
 Example usage:
 
     $ ls -R *
-    _staticjs.yml    	        main.js
+    _staticjs.yml    	        coffeescript.coffee         main.js
     ...
 
     $ heroku create --stack cedar --buildpack https://github.com/abhishekmunie/heroku-buildpack-static-js.git
@@ -19,15 +19,26 @@ Example usage:
     ...
     -----> Heroku receiving push
     -----> Fetching custom buildpack... cloning with git...done
-    -----> JavaScript CDN app detected
-    -----> Fetching nginx binaries
-    -----> Vendoring nginx 1.0.14
-    -----> Installing OpenJDK 1.6...done
+    -----> Static-JS app detected
+    -----> Resolving engine versions
+    ...
+    -----> Fetching Node.js binaries
+    -----> Vendoring node into slug
+    -----> Installing dependencies with npm
+           coffee-script@1.3.3 ./node_modules/coffee-script 
+           coffee-script@1.3.3 /tmp/node.Lsu9Yf/node_modules/coffee-script
+           Dependencies installed
+    -----> Building runtime environment
+    -----> Making Coffee...done
     -----> Fetching Closure Compiler...done
     -----> Compiling JS files...
+           -----> compiling coffeescript.js...done
            -----> compiling main.js...done
            ...
            done.
+    -----> Creating default nginx configuration.done
+    -----> Fetching nginx binaries
+    -----> Vendoring nginx 1.0.14
     -----> Discovering process types
            Procfile declares types          -> (none)
            Default types for JavaScript CDN -> web
