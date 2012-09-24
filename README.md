@@ -41,7 +41,7 @@ Example usage:
     -----> Vendoring nginx 1.0.14
     -----> Discovering process types
            Procfile declares types          -> (none)
-           Default types for JavaScript CDN -> web
+           Default types for Static-JS -> web
     ...
 
 The buildpack will detect your app as Static JS if it has the file `_staticjs.yml` in the `root`. At present `_staticjs.yml` doesn't support any configuration.
