@@ -1,5 +1,5 @@
-Heroku buildpack: Static-JS
-============================
+Heroku buildpack: Static-JS (with Coffee Script and Google Closure Compiler)
+=============================================================================
 
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpack) which minifies and serves javascript files using static nginx.
 
