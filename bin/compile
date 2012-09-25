@@ -46,7 +46,7 @@ echo "done"
 # js compilation ----------------------------
 
 echo "-----> Compiling JS files..."
-find ${BUILD_DIR} -iregex ".*\.js" \! -iregex ".*\.min\.js" | while read -r jsfile
+find ${BUILD_DIR} -iregex ".*\.js" \! -iregex ".*\.min\.js" \! -path '*/libs/*' | while read -r jsfile
 do
   echo -n "-----> compiling ${jsfile#*$BUILD_DIR/}..." | indent
   fname=${jsfile%.*}
@@ -61,7 +61,7 @@ echo "       done."
 
 # init default nginx configuration ----------
 
-if [ -f "${BUILD_DIR}/conf" ]; then
+if [ -d "${BUILD_DIR}/conf" ]; then
   echo "-----> Using existing nginx configuration."
 else
   echo -n "-----> Creating default nginx configuration."
