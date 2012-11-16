@@ -26,17 +26,24 @@ curl --silent --location https://raw.github.com/heroku/heroku-buildpack-nodejs/m
 chmod 755 compile_node
 ./compile_node $BUILD_DIR $CACHE_DIR
 
-export PATH=$BUILD_DIR/bin:$BUILD_DIR/node_modules/.bin:$PATH
+export PATH=$PATH:$BUILD_DIR/bin:$BUILD_DIR/node_modules/.bin
 
-#find $BUILD_DIR | sed -e 's/[^-][^\/]*\//--/g;s/--/ |-/'
-
-# css compilation ----------------------------
+# coffee-script compilation -----------------
 
 BUILD_DIR=$1
 
-echo -n "-----> Making Coffee..."
-coffee --compile --output ${BUILD_DIR} ${BUILD_DIR} | indent
-echo "done"
+if [ -f "$BUILD_DIR/Cakefile" ]; then
+  echo -n "-----> Making Coffee using Cake..."
+  curr_dir=$PWD
+  cd ${BUILD_DIR}
+  cake build | indent
+  cd $curr_dir
+  echo "done"
+else
+  echo -n "-----> Making Coffee..."
+  coffee --compile --output ${BUILD_DIR} ${BUILD_DIR} | indent
+  echo "done"
+fi
 
 # Closure Compiler Fetch --------------------
 echo -n "-----> Fetching Closure Compiler..."

@@ -47,6 +47,8 @@ Example usage:
 The buildpack will detect your app as Static JS if it has the file `_staticjs.yml` in the `root`. At present `_staticjs.yml` doesn't support any configuration.
 You can set custom nginx config as described for [heroku-buildpack-nginx](https://github.com/abhishekmunie/heroku-buildpack-nginx).
 
+If the app has `Cakefile` in root it will be compiled using [Cake](http://coffeescript.org/#cake).
+
 Hacking
 -------
 
