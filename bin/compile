@@ -45,7 +45,14 @@ else
   echo "done"
 fi
 
+echo "-----> Cleaning coffee..."
+find ${BUILD_DIR} -iregex ".*\.coffee" | while read -r csfile
+do
+  rm -f "$csfile"
+done
+echo "       done."
 # Closure Compiler Fetch --------------------
+
 echo -n "-----> Fetching Closure Compiler..."
 curl --silent --location http://closure-compiler.googlecode.com/files/compiler-latest.tar.gz | tar xz
 echo "done"
@@ -65,6 +72,7 @@ do
   echo "done"
 done
 echo "       done."
+rm -f compiler.jar
 
 # init default nginx configuration ----------
 

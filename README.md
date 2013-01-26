@@ -25,7 +25,7 @@ Example usage:
     -----> Fetching Node.js binaries
     -----> Vendoring node into slug
     -----> Installing dependencies with npm
-           coffee-script@1.3.3 ./node_modules/coffee-script 
+           coffee-script@1.3.3 ./node_modules/coffee-script
            coffee-script@1.3.3 /tmp/node.Lsu9Yf/node_modules/coffee-script
            Dependencies installed
     -----> Building runtime environment
@@ -57,8 +57,10 @@ create a test app with `--buildpack <your-github-url>` and push to it.
 
 This buildpack first uses command-line version of [coffee-script Node.js utility](http://coffeescript.org/#usage) to compile all `filename.coffee` to `filename.js`
 by running `coffee --compile --output ${BUILD_DIR} ${BUILD_DIR}`.
+If repo has `Cakefile` in root it will be used instead to compile CoffeeScripts.
+The CoffeeScripts are then removed.
 It then uses [Google Closure Compiler](https://developers.google.com/closure/compiler/) to minify `filename.js` and create `filename.min.js`.
 It also creates a copy of `filename.min.js` file with first 8 characters of its sha1 (`filename.<sha1:0:8>.js`). Files in 'libs' directories will be ignored.
 It simply runs `java -jar compiler.jar --js_output_file "filename.js" --js "filename.min.js"` on all `.js` files except those ending in `.min.js`.
-To customize compilation see [Annotating JavaScript for the Closure Compiler](https://developers.google.com/closure/compiler/docs/js-for-compiler) 
+To customize compilation see [Annotating JavaScript for the Closure Compiler](https://developers.google.com/closure/compiler/docs/js-for-compiler)
 and [Advanced Compilation and Externs](https://developers.google.com/closure/compiler/docs/api-tutorial3).
