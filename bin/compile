@@ -20,39 +20,63 @@ source $BUILD_DIR/_static_js.cfg
 
 # Node Installation --------------------------
 
-BUILD_DIR=$(mktemp -d -t node.XXXXXX)
+NODE_BUILDPACK_DIR=$(mktemp -d -t node.XXXXXX)
+NODE_BUILD_DIR=$(mktemp -d -t node.XXXXXX)
+git clone https://github.com/heroku/heroku-buildpack-nodejs.git $NODE_BUILDPACK_DIR
+mv $NODE_BUILDPACK_DIR/vendor $LP_DIR
+mv $NODE_BUILDPACK_DIR/bin/compile $LP_DIR/bin/compile_node
 
-curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-static-js/master/conf/package.json > $BUILD_DIR/package.json
+$LP_DIR/conf/package.json > $NODE_BUILD_DIR/package.json
 
-curl --silent --location https://raw.github.com/heroku/heroku-buildpack-nodejs/master/bin/compile > compile_node
-chmod 755 compile_node
-./compile_node $BUILD_DIR $CACHE_DIR
+$LP_DIR/bin/compile_node $NODE_BUILD_DIR $CACHE_DIR
 
-export PATH=$PATH:$BUILD_DIR/bin:$BUILD_DIR/node_modules/.bin
+export PATH=$PATH:$NODE_BUILD_DIR/bin:$NODE_BUILD_DIR/node_modules/.bin
+
+# coffee-script import ----------------------
+
+echo "-----> Importing coffee-script files..."
+find $BUILD_DIR -iregex ".*\.coffee" | while read -r csfile
+do
+  echo -n "-----> applying imports in ${csfile#*$BUILD_DIR/}..." | indent
+  importer "$csfile" "$csfile" | indent
+  echo "done"
+done
+echo "       done."
 
 # coffee-script compilation -----------------
-
-BUILD_DIR=$1
 
 if [ -f "$BUILD_DIR/Cakefile" ]; then
   echo -n "-----> Making Coffee using Cake..."
   curr_dir=$PWD
-  cd ${BUILD_DIR}
+  cd $BUILD_DIR
   cake build | indent
   cd $curr_dir
   echo "done"
 else
   echo -n "-----> Making Coffee..."
-  coffee --compile --output ${BUILD_DIR} ${BUILD_DIR} | indent
+  coffee --compile --output $BUILD_DIR $BUILD_DIR | indent
   echo "done"
 fi
 
 echo "-----> Cleaning coffee..."
-find ${BUILD_DIR} -iregex ".*\.coffee" | while read -r csfile
+find $BUILD_DIR -iregex ".*\.coffee" | while read -r csfile
 do
   rm -f "$csfile"
 done
 echo "       done."
+
+# js import ---------------------------------
+
+echo "-----> Importing js files..."
+find $BUILD_DIR -iregex ".*\.js" | while read -r jsfile
+do
+  echo -n "-----> applying imports in ${jsfile#*$BUILD_DIR/}..." | indent
+  fname=${jsfile%.*}
+  importer "$jsfile" "$fname.i.js" | indent
+  echo "done"
+done
+echo "       done."
+
 # Closure Compiler Fetch --------------------
 
 echo -n "-----> Fetching Closure Compiler..."
@@ -62,7 +86,7 @@ echo "done"
 # js compilation ----------------------------
 
 echo "-----> Compiling JS files..."
-find ${BUILD_DIR} -iregex ".*\.js" \! -iregex ".*\.min\.js" \! -path '*/libs/*' | while read -r jsfile
+find $BUILD_DIR -iregex ".*\.js" \! -iregex ".*\.min\.js" \! -path '*/libs/*' | while read -r jsfile
 do
   echo -n "-----> compiling ${jsfile#*$BUILD_DIR/}..." | indent
   fname=${jsfile%.*}
@@ -76,20 +100,15 @@ done
 echo "       done."
 rm -f compiler.jar
 
-# init default nginx configuration ----------
-
-if [ -d "${BUILD_DIR}/conf" ]; then
-  echo "-----> Using existing nginx configuration."
-else
-  echo -n "-----> Creating default nginx configuration."
-  mkdir ${BUILD_DIR}/conf
-  curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-static-js/master/conf/mime.types > ${BUILD_DIR}/conf/mime.types
-  curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-static-js/master/conf/nginx.conf.erb > ${BUILD_DIR}/conf/nginx.conf.erb
-  echo "done"
-fi
-
 # Static ------------------------------------
 
-curl --silent --location https://raw.github.com/abhishekmunie/heroku-buildpack-static/master/bin/compile > compile_static
-chmod +x compile_static
-./compile_static $BUILD_DIR $CACHE_DIR
+STATIC_BUILDPACK_DIR=$(mktemp -d -t static.XXXXXX)
+git clone https://github.com/abhishekmunie/heroku-buildpack-static.git $STATIC_BUILDPACK_DIR
+mv -R $STATIC_BUILDPACK_DIR/vendor/* $LP_DIR/vendor
+mv $STATIC_BUILDPACK_DIR/bin/compile $LP_DIR/bin/compile_static
+$LP_DIR/bin/compile_static $BUILD_DIR $CACHE_DIR
+
+# Cleanup -----------------------------------
+rm -f $NODE_BUILDPACK_DIR
+rm -f $NODE_BUILD_DIR
+rm -f $STATIC_BUILDPACK_DIR
