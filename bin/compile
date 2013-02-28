@@ -17,6 +17,7 @@ function indent() {
 }
 
 source $BUILD_DIR/_static_js.cfg
+
 LP_DIR=`cd $(dirname $0); cd ..; pwd`
 
 # Node Installation --------------------------
@@ -104,7 +105,6 @@ STATIC_BUILDPACK_DIR=$(mktemp -d -t static.XXXXXX)
 git clone --quiet https://github.com/abhishekmunie/heroku-buildpack-static.git $STATIC_BUILDPACK_DIR
 mv -f $STATIC_BUILDPACK_DIR/vendor/* $LP_DIR/vendor
 mv $STATIC_BUILDPACK_DIR/bin/compile $LP_DIR/bin/compile_static
-ls -R $LP_DIR
 $LP_DIR/bin/compile_static $BUILD_DIR $CACHE_DIR | indent
 echo "       done."
 
