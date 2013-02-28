@@ -1,7 +1,7 @@
 Heroku buildpack: Static-JS (with Coffee Script and Google Closure Compiler)
 =============================================================================
 
-This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpack) which compiles coffee, then minifies and serves javascript files using static nginx.
+This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpack) which compiles coffee, then minifies and serves javascript files using a static.
 
 Usage
 -----
@@ -9,7 +9,7 @@ Usage
 Example usage:
 
     $ ls -R *
-    _staticjs.yml    	        coffeescript.coffee         main.js
+    _static_js.cfg              coffeescript.coffee         main.js
     ...
 
     $ heroku create --stack cedar --buildpack https://github.com/abhishekmunie/heroku-buildpack-static-js.git
@@ -36,16 +36,13 @@ Example usage:
            -----> compiling main.js...done
            ...
            done.
-    -----> Creating default nginx configuration.done
-    -----> Fetching nginx binaries
-    -----> Vendoring nginx 1.0.14
-    -----> Discovering process types
+           ...
            Procfile declares types          -> (none)
            Default types for Static-JS -> web
     ...
 
-The buildpack will detect your app as Static JS if it has the file `_staticjs.yml` in the `root`. At present `_staticjs.yml` doesn't support any configuration.
-You can set custom nginx config as described for [heroku-buildpack-nginx](https://github.com/abhishekmunie/heroku-buildpack-nginx).
+The buildpack will detect your app as Static JS if it has the file `_static_js.cfg` in the `root`. At present `_static_js.cfg` doesn't support any configuration.
+You can set custom static server config as described for [heroku-buildpack-static](https://github.com/abhishekmunie/heroku-buildpack-static).
 
 If the app has `Cakefile` in root it will be compiled using [Cake](http://coffeescript.org/#cake).
 

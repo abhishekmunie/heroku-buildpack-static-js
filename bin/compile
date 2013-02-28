@@ -16,6 +16,8 @@ function indent() {
   esac
 }
 
+source $BUILD_DIR/_static_js.cfg
+
 # Node Installation --------------------------
 
 BUILD_DIR=$(mktemp -d -t node.XXXXXX)
