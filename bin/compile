@@ -23,7 +23,7 @@ source $BUILD_DIR/_static_js.cfg
 NODE_BUILDPACK_DIR=$(mktemp -d -t node.XXXXXX)
 NODE_BUILD_DIR=$(mktemp -d -t node.XXXXXX)
 git clone --quiet https://github.com/heroku/heroku-buildpack-nodejs.git $NODE_BUILDPACK_DIR
-mv -r $NODE_BUILDPACK_DIR/vendor/* $LP_DIR/vendor
+mv -f $NODE_BUILDPACK_DIR/vendor/* $LP_DIR/vendor
 mv $NODE_BUILDPACK_DIR/bin/compile $LP_DIR/bin/compile_node
 
 $LP_DIR/conf/package.json > $NODE_BUILD_DIR/package.json
@@ -105,7 +105,7 @@ rm -f compiler.jar
 echo "-----> Creating Static Server..."
 STATIC_BUILDPACK_DIR=$(mktemp -d -t static.XXXXXX)
 git clone --quiet https://github.com/abhishekmunie/heroku-buildpack-static.git $STATIC_BUILDPACK_DIR
-mv -r $STATIC_BUILDPACK_DIR/vendor/* $LP_DIR/vendor
+mv -f $STATIC_BUILDPACK_DIR/vendor/* $LP_DIR/vendor
 mv $STATIC_BUILDPACK_DIR/bin/compile $LP_DIR/bin/compile_static
 $LP_DIR/bin/compile_static $BUILD_DIR $CACHE_DIR | indent
 echo "       done."
