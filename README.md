@@ -1,6 +1,8 @@
 Heroku buildpack: Static-JS (with Coffee Script and Google Closure Compiler)
 =============================================================================
 
+* Note: This buildpack will be merged into [abhishekmunie/heroku-buildpack-static](https://github.com/abhishekmunie/heroku-buildpack-static)
+
 This is a [Heroku buildpack](http://devcenter.heroku.com/articles/buildpack) which compiles coffee, then minifies and serves javascript files using a static.
 
 Usage
@@ -37,8 +39,6 @@ Example usage:
            ...
            done.
            ...
-           Procfile declares types          -> (none)
-           Default types for Static-JS -> web
     ...
 
 The buildpack will detect your app as Static JS if it has the file `_static_js.cfg` in the `root`. At present `_static_js.cfg` doesn't support any configuration.
